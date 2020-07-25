@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import Button from "react-bootstrap/Button";
 
@@ -7,8 +7,14 @@ import PersonList from "./PersonList";
 function Main(props) {
   const [targetPerson, setTargetPerson] = useState("");
 
+  const hiddenFileInput = useRef(null);
+
+  const handleLoadClick = (e) => {
+    hiddenFileInput.current.click();
+  };
+
   return (
-    <div className="container-fluid">
+    <div className="container">
       <div className="row">
         <div className="col-6">
           <PersonList
@@ -60,6 +66,28 @@ function Main(props) {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="row m-3">
+        <div className="col">
+          <button
+            className="btn btn-success m-3"
+            onClick={() => props.handleSaveData()}
+          >
+            Save Data
+          </button>
+          <button
+            className="btn btn-warning m-3"
+            onClick={(e) => handleLoadClick(e)}
+          >
+            Load Data
+          </button>
+          <input
+            type="file"
+            ref={hiddenFileInput}
+            onChange={(e) => props.handleLoadData(e)}
+            style={{ display: "none" }}
+          />
         </div>
       </div>
     </div>

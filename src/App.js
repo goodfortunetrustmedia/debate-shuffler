@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 
@@ -9,22 +9,24 @@ import Main from "./components/Main";
 import History from "./components/History";
 import Shuffler from "./components/Shuffler";
 
+/*
+todo: split the load file into persons, and history
+todo: load history
+todo: render history
+todo: add manual debate entry
+todo: delete debate entry
+todo: shuffle
+todo: shuffle optimiser
+todo: apply debate setup
+*/
+
 function App() {
   const [currentPage, setCurrentPage] = useState("Main");
 
-  const [persons, setPersons] = useState([
-    { name: "Patrick", room: "breakout" },
-    { name: "Ryan", room: "breakout" },
-    { name: "Eric", room: "breakout" },
-    { name: "Casey", room: "breakout" },
-    { name: "Pamo", room: "breakout" },
-    { name: "Vincent", room: "breakout" },
-    { name: "Gonpo", room: "main" },
-    { name: "Lisa", room: "main" },
-  ]);
-  const [debateHistory, setDebateHistory] = useState();
+  const [persons, setPersons] = useState([]);
+  const [debateHistory, setDebateHistory] = useState([]);
 
-  const [password, setPassword] = useState("tksldebate");
+  const [password, setPassword] = useState("");
   const correctPassword = "tksldebate";
 
   const getPage = () => {
@@ -36,6 +38,8 @@ function App() {
             handleMovePersonToRoom={handleMovePersonToRoom}
             handleAddPerson={handleAddPerson}
             handleDeletePerson={handleDeletePerson}
+            handleSaveData={handleSaveData}
+            handleLoadData={handleLoadData}
           />
         );
       } else if (currentPage === "History") {
@@ -114,6 +118,27 @@ function App() {
     } else {
       alert("Person doesn't exist in list of people. Check the name");
     }
+  };
+
+  const handleLoadData = (e) => {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      console.log(JSON.parse(e.target.result));
+      setPersons(JSON.parse(e.target.result));
+    };
+    reader.readAsText(file);
+    e.target.value = null;
+  };
+
+  const handleSaveData = () => {
+    const fileData = JSON.stringify(persons);
+    const blob = new Blob([fileData], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "TKSLDebateData.json";
+    link.href = url;
+    link.click();
   };
 
   return (

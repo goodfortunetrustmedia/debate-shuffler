@@ -24,7 +24,7 @@ function PersonList(props) {
     <div>
       <select
         multiple
-        size="10"
+        size="15"
         style={{ width: "100%" }}
         onChange={(e) => handleSelectPersonChange(e)}
       >

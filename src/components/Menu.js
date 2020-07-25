@@ -13,7 +13,7 @@ function Menu(props) {
           className="float-left m-1"
           onClick={() => props.handleNavButton("Main")}
         >
-          Main
+          Setup
         </Button>
         <Button
           variant={props.currentPage === "History" ? "primary" : "light"}
