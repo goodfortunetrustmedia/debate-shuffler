@@ -6,8 +6,6 @@ import logo from "./logo.svg";
 
 import "./App.css";
 
-import Button from "react-bootstrap/Button";
-
 import Menu from "./components/Menu";
 import Main from "./components/Main";
 import History from "./components/History";
@@ -22,35 +20,11 @@ todo: record debate setup
 function App() {
   const [currentPage, setCurrentPage] = useState("Main");
 
-  const [persons, setPersons] = useState([
-    { name: "Patrick", room: "breakout" },
-    { name: "Ryan", room: "breakout" },
-    { name: "Eric", room: "breakout" },
-    { name: "Casey", room: "breakout" },
-    { name: "Pamo", room: "breakout" },
-    { name: "Vincent", room: "breakout" },
-    { name: "Gonpo", room: "main" },
-    { name: "Lisa", room: "main" },
-    { name: "Pema", room: "main" },
-    { name: "Tsewang", room: "main" },
-    { name: "Tina", room: "breakout" },
-    { name: "Alan", room: "breakout" },
-    { name: "Chodzom", room: "breakout" },
-  ]);
-  const [debateHistory, setDebateHistory] = useState([
-    {
-      id: "abc",
-      date: moment().format("YYYY-MM-DD"),
-      debators: ["Vincent", "Pamo"],
-    },
-    {
-      id: "ab2c",
-      date: moment().format("YYYY-MM-DD"),
-      debators: ["Patrick", "Alan"],
-    },
-  ]);
+  const [persons, setPersons] = useState([]);
+  const [debateHistory, setDebateHistory] = useState([]);
+  const [currentMatchup, setCurrentMatchup] = useState([]);
 
-  const [password, setPassword] = useState("tksldebate");
+  const [password, setPassword] = useState("");
   const correctPassword = "tksldebate";
 
   const getPage = () => {
@@ -74,7 +48,15 @@ function App() {
           />
         );
       } else if (currentPage === "Shuffler") {
-        return <Shuffler />;
+        return (
+          <Shuffler
+            persons={persons}
+            debateHistory={debateHistory}
+            currentMatchup={currentMatchup}
+            handleSetMatchup={handleSetMatchup}
+            handleSaveMatchup={handleSaveMatchup}
+          />
+        );
       }
     } else {
       return (
@@ -105,7 +87,6 @@ function App() {
 
   const handleMovePersonToRoom = (selectedPersons) => {
     let newPersonState = [...persons];
-    console.log(newPersonState);
     newPersonState.forEach((p) => {
       if (selectedPersons.includes(p.name)) {
         p.room = p.room === "main" ? "breakout" : "main";
@@ -162,28 +143,32 @@ function App() {
   };
 
   const handleLoadData = (e) => {
-    let file = e.target.files[0];
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      let data = JSON.parse(e.target.result);
-      setPersons(data.persons);
-      setDebateHistory(data.debateHistory);
-    };
-    reader.readAsText(file);
-    e.target.value = null;
+    if (password === correctPassword) {
+      let file = e.target.files[0];
+      let reader = new FileReader();
+      reader.onload = (e) => {
+        let data = JSON.parse(e.target.result);
+        setPersons(data.persons);
+        setDebateHistory(data.debateHistory);
+      };
+      reader.readAsText(file);
+      e.target.value = null;
+    }
   };
 
   const handleSaveData = () => {
-    const fileData = JSON.stringify({
-      persons: persons,
-      debateHistory: debateHistory,
-    });
-    const blob = new Blob([fileData], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.download = "TKSLDebateData_" + moment().format("YYYYMMDD") + ".json";
-    link.href = url;
-    link.click();
+    if (password === correctPassword) {
+      const fileData = JSON.stringify({
+        persons: persons,
+        debateHistory: debateHistory,
+      });
+      const blob = new Blob([fileData], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = "TKSLDebateData_" + moment().format("YYYYMMDD") + ".json";
+      link.href = url;
+      link.click();
+    }
   };
 
   const handleAddDebate = (debateEntry) => {
@@ -199,6 +184,18 @@ function App() {
 
   const handleDeleteDebate = (debateEntryID) => {
     let newDebateHistory = debateHistory.filter((d) => d.id !== debateEntryID);
+    setDebateHistory(newDebateHistory);
+  };
+
+  const handleSetMatchup = (newMatchup) => {
+    setCurrentMatchup(newMatchup);
+  };
+
+  const handleSaveMatchup = (newDebateEntries) => {
+    let newDebateHistory = [...debateHistory];
+    newDebateEntries.map((d) => {
+      newDebateHistory.push(d);
+    });
     setDebateHistory(newDebateHistory);
   };
 

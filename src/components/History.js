@@ -12,7 +12,12 @@ function History(props) {
       return (
         <tr key={d.id}>
           <td>{d.date}</td>
-          <td>{d.debators.join(" vs ")}</td>
+          <td>
+            {" "}
+            {d.debators[0] === d.debators[1]
+              ? d.debators[0] + " in group of 3"
+              : d.debators.join(" vs ")}
+          </td>
           <td>
             <Button
               className="btn-sm my-0 py-0"
@@ -42,7 +47,7 @@ function History(props) {
 
   return (
     <div className="container">
-      <div className="row mb-3">
+      <div className="row">
         <div className="col-12">
           <div className="input-group">
             <select

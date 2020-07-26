@@ -1,8 +1,6 @@
 import React, { useRef } from "react";
 
 import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
 
 function Menu(props) {
   const hiddenFileInput = useRef(null);
@@ -10,6 +8,7 @@ function Menu(props) {
   const handleLoadClick = (e) => {
     hiddenFileInput.current.click();
   };
+
   return (
     <div className="row bg-dark p-2">
       <div className="col-12">
