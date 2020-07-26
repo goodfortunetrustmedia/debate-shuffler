@@ -11,6 +11,7 @@ function Main(props) {
     <div className="container">
       <div className="row">
         <div className="col-6">
+          <h5>Main Room</h5>
           <PersonList
             persons={props.persons}
             roomType={"main"}
@@ -18,6 +19,7 @@ function Main(props) {
           />
         </div>
         <div className="col-6">
+          <h5>Breakout Rooms</h5>
           <PersonList
             persons={props.persons}
             roomType={"breakout"}
